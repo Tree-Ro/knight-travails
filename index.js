@@ -1,44 +1,44 @@
 function knightMoves(start, target) {}
 
-function generateGraph(graph = [], capacity = 8) {
-  const length = graph.length;
-  if (length >= capacity) return graph;
+const KNIGHT_DIRECTIONS = [
+  [1, 2],
+  [-1, 2],
+  [2, 1],
+  [2, -1],
+  [1, -2],
+  [-1, -2],
+  [-2, 1],
+  [-2, -1],
+];
 
-  graph[length] = [];
-  for (let i = 0; i < capacity; ++i) {
-    const vertices = getAllVertices(i, graph.length);
-    graph[length].push(vertices);
+function generateGraph(moveset) {
+  const capacity = 8;
+  let graph = [];
+  for (let x = 0; x < capacity; ++x) {
+    graph[x] = [];
+    // Iterate through Y axis
+    for (let y = 0; y < capacity; ++y) {
+      const vertices = getAllVertices(x, y);
+      graph[x].push(vertices);
+    }
   }
-  generateGraph(graph);
 
   return graph;
 
+  // Gets all valid knight moves from x,y position
   function getAllVertices(xPosition = 0, yPosition = 0) {
-    const currentPosition = [xPosition, yPosition];
-    let knightDirections = [
-      [1, 2],
-      [-1, 2],
-      [2, 1],
-      [2, -1],
-      [1, -2],
-      [-1, -2],
-      [-2, 1],
-      [-2, -1],
-    ];
-    let vertices = [];
+    const vertices = moveset.map(([dx, dy]) => [
+      xPosition + dx,
+      yPosition + dy,
+    ]);
 
-    for (let i = 0; i < knightDirections.length; ++i) {
-      const [x, y] = currentPosition;
-      const [c, d] = knightDirections[i];
-
-      const [newX, newY] = [x + c, y + d];
-
-      //Only push knight movements that stay within bounds.
-      if (0 <= newX && 0 <= newY && capacity > newX && capacity > newY) {
-        vertices.push([newX, newY]);
-      }
-    }
+    // Only return knight movements that stay within bounds.
+    const filteredVertices = vertices.filter(
+      ([newX, newY]) =>
+        newX >= 0 && newX < capacity && newY >= 0 && newY < capacity
+    );
+    return filteredVertices;
   }
 }
 
-console.log(generateGraph());
+console.log(generateGraph(KNIGHT_DIRECTIONS));
