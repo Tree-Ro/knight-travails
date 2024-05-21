@@ -37,7 +37,7 @@ function generateGraph(moveset) {
 
   return graph;
 
-  // Gets all valid knight moves from x,y position
+  // Gets all knight moves from x,y position
   function getAllVertices(xPosition = 0, yPosition = 0) {
     const vertices = moveset.map(([dx, dy]) => [
       xPosition + dx,
@@ -56,18 +56,41 @@ function generateGraph(moveset) {
 function breadthFirstSearch(graph, startVertex, target) {
   const [startX, startY] = startVertex;
   const [targetX, targetY] = target;
-  let queue = [graph[startX][startY]];
+  let queue = [[startX, startY]];
+  let parent = {};
+  parent[`${startX},${startY}`] = null;
 
-  while (queue[0]) {
-    const currentVertex = queue.shift();
+  while (queue.length > 0) {
+    const [currentX, currentY] = queue.shift();
+    const currentVertex = graph[currentX][currentY];
 
-    for (item of currentVertex) {
-      const [x, y] = item;
-      queue.push(graph[x][y]);
+    for (const [x, y] of currentVertex) {
+      if (!(parent[`${x},${y}`] !== undefined)) {
+        queue.push([x, y]);
+        parent[`${x},${y}`] = [currentX, currentY];
 
-      if (x === targetX && y === targetY)
-        return `Your target was reached within ${'???'} moves. [${[x, y]}]`;
+        if (x === targetX && y === targetY) {
+          return constructPath(parent, target);
+        }
+      }
     }
+  }
+
+  return null;
+
+  function constructPath(parent, target) {
+    let path = [];
+    let currentNode = target;
+
+    while (currentNode) {
+      path.push(currentNode);
+      currentNode = parent[`${currentNode[0]},${currentNode[1]}`];
+    }
+
+    path.reverse();
+    return `Your target was reached in ${path.length - 1} moves. Path: ${path
+      .map((p) => `[${p}]`)
+      .join(' -> ')}`;
   }
 }
 
