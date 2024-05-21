@@ -1,6 +1,6 @@
 function knightMoves(start, target) {}
 
-const KNIGHT_DIRECTIONS = [
+const KNIGHT_MOVESET = [
   [1, 2],
   [-1, 2],
   [2, 1],
@@ -14,6 +14,7 @@ const KNIGHT_DIRECTIONS = [
 function generateGraph(moveset) {
   const capacity = 8;
   let graph = [];
+
   for (let x = 0; x < capacity; ++x) {
     graph[x] = [];
     // Iterate through Y axis
@@ -41,4 +42,4 @@ function generateGraph(moveset) {
   }
 }
 
-console.log(generateGraph(KNIGHT_DIRECTIONS));
+console.log(generateGraph(KNIGHT_MOVESET));
