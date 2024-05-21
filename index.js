@@ -1,5 +1,15 @@
-function knightMoves(start, target) {}
+function knightMoves(start, target) {
+  const graph = generateGraph(KNIGHT_MOVESET);
 
+  //If start || target is out of bounds
+  for (item of start.concat(target)) {
+    if (item > graph.length - 1) return null;
+  }
+
+  return breadthFirstSearch(graph, start, target);
+}
+
+//All possible knight moves
 const KNIGHT_MOVESET = [
   [1, 2],
   [-1, 2],
@@ -15,6 +25,7 @@ function generateGraph(moveset) {
   const capacity = 8;
   let graph = [];
 
+  //Iterate through X axis
   for (let x = 0; x < capacity; ++x) {
     graph[x] = [];
     // Iterate through Y axis
@@ -42,4 +53,23 @@ function generateGraph(moveset) {
   }
 }
 
-console.log(generateGraph(KNIGHT_MOVESET));
+function breadthFirstSearch(graph, startVertex, target) {
+  const [startX, startY] = startVertex;
+  const [targetX, targetY] = target;
+  let queue = [graph[startX][startY]];
+
+  while (queue[0]) {
+    const currentVertex = queue.shift();
+
+    for (item of currentVertex) {
+      const [x, y] = item;
+      queue.push(graph[x][y]);
+
+      if (x === targetX && y === targetY)
+        return `Your target was reached within ${'???'} moves. [${[x, y]}]`;
+    }
+  }
+}
+
+console.log(knightMoves([0, 0], [3, 5]));
+// console.log(generateGraph(KNIGHT_MOVESET));
